@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import SkillsContextProvider from '@/components/context/SkillsContext';
 
 export const metadata: Metadata = {
 	title: 'Create Next App',
@@ -13,7 +14,9 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en">
-			<body className="bg-slate-200 h-screen w-full">{children}</body>
+			<body className="bg-slate-200 h-screen w-full">
+				<SkillsContextProvider>{children}</SkillsContextProvider>
+			</body>
 		</html>
 	);
 }

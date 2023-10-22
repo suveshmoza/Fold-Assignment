@@ -1,26 +1,16 @@
 import { useState, useRef, useEffect } from 'react';
+import ListItem from '../ListItem/ListItem';
+import useSkills from '../hooks/useSkills';
+import { balanceList } from '../utils/sort';
+import { getStyles } from '../utils/style';
 
 type DragItem = {
 	grpI: number;
 	itemI: number;
 };
 
-type Group = {
-	title: string;
-	items: string[];
-};
-
-type DragNDropProps = {
-	data: {
-		title: string;
-		items: string[];
-	}[];
-};
-
-function DragNDrop(props: DragNDropProps) {
-	const { data } = props;
-
-	const [list, setList] = useState<Group[]>(data);
+function DragNDrop() {
+	const { skills, nextToFill, updateSkillPosition } = useSkills();
 	const [dragging, setDragging] = useState(false);
 
 	const dragItem = useRef<DragItem | null>(null);
@@ -30,7 +20,6 @@ function DragNDrop(props: DragNDropProps) {
 		e: React.DragEvent<HTMLDivElement>,
 		item: DragItem
 	) => {
-		console.log(typeof e.target);
 		dragItemNode.current = e.target as HTMLDivElement;
 		dragItemNode.current.addEventListener('dragend', handleDragEnd);
 		dragItem.current = item;
@@ -40,29 +29,12 @@ function DragNDrop(props: DragNDropProps) {
 		}, 0);
 	};
 
-	const balanceList = (list: Group[]) => {
-		const left = list[0].items;
-		const right = list[1].items;
-
-		while (left.length > 5 || right.length > 5) {
-			if (left.length > 5) {
-				const itemToMove = left.pop()!;
-				right.unshift(itemToMove);
-			} else if (right.length > 5) {
-				const itemToMove = right.shift()!;
-				left.push(itemToMove);
-			}
-		}
-		return list;
-	};
-
 	const handleDragEnter = (
 		e: React.DragEvent<HTMLDivElement>,
 		targetItem: DragItem
 	) => {
 		if (dragItemNode.current !== e.target) {
-			console.log('DragItem:', dragItem);
-			let newList = JSON.parse(JSON.stringify(list));
+			let newList = JSON.parse(JSON.stringify(skills));
 			newList[targetItem.grpI].items.splice(
 				targetItem.itemI,
 				0,
@@ -73,7 +45,7 @@ function DragNDrop(props: DragNDropProps) {
 			);
 			newList = balanceList(newList);
 			dragItem.current = targetItem;
-			setList(newList);
+			updateSkillPosition(newList);
 		}
 	};
 
@@ -87,62 +59,45 @@ function DragNDrop(props: DragNDropProps) {
 		dragItemNode.current = null;
 	};
 
-	const getStyles = (item: DragItem) => {
-		if (
-			dragItem.current &&
-			dragItem.current.grpI === item.grpI &&
-			dragItem.current.itemI === item.itemI
-		) {
-			return 'w-full h-[50px] bg-teal-400 rounded mb-4 opacity-0 cursor-move';
-		}
-		return 'w-full h-[50px] bg-teal-400 rounded mb-4 cursor-move';
-	};
-
-	useEffect(() => {
-		setList(data);
-	}, [data]);
-
-	if (list) {
-		return (
-			<div className="mt-8 grid grid-cols-2 gap-4 transition-all duration-300">
-				{list.map((grp, grpI) => (
-					<div
-						key={grp.title}
-						onDragEnter={
-							dragging && !grp.items.length
-								? (e) => handleDragEnter(e, { grpI, itemI: 0 })
-								: undefined
-						}
-						className=""
-					>
-						{grp.items.map((item, itemI) => (
-							<div
-								draggable
-								key={item}
-								onDragStart={(e) => handletDragStart(e, { grpI, itemI })}
-								onDragEnter={
-									dragging
-										? (e) => {
-												handleDragEnter(e, { grpI, itemI });
-										  }
-										: undefined
-								}
-								className={
-									dragging
-										? getStyles({ grpI, itemI })
-										: 'w-full h-[50px] bg-teal-400 rounded mb-4 cursor-move'
-								}
-							>
-								{item}
-							</div>
-						))}
-					</div>
-				))}
-			</div>
-		);
-	} else {
-		return null;
-	}
+	return (
+		<div className="mt-8 grid grid-cols-2 gap-4 transition-all duration-300">
+			{skills.map((grp, grpI) => (
+				<div
+					key={grp.title}
+					onDragEnter={
+						dragging && !grp.items.length
+							? (e) => handleDragEnter(e, { grpI, itemI: 0 })
+							: undefined
+					}
+				>
+					{grp.items.map((item, itemI) => (
+						<div
+							draggable={item.length > 0}
+							key={itemI}
+							onDragStart={(e) => handletDragStart(e, { grpI, itemI })}
+							onDragEnter={
+								dragging
+									? (e) => {
+											handleDragEnter(e, { grpI, itemI });
+									  }
+									: undefined
+							}
+							className={
+								dragging
+									? getStyles(dragging, dragItem, { grpI, itemI })
+									: 'rounded-md mb-4'
+							}
+						>
+							<ListItem
+								defaultValue={item}
+								index={grpI === 0 ? itemI + 1 : itemI + 6}
+							/>
+						</div>
+					))}
+				</div>
+			))}
+		</div>
+	);
 }
 
 export default DragNDrop;
