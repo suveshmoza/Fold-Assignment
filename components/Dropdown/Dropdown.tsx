@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import DropdownOption from './DropdownOption';
 import DropdownContainer from './DropdownContainer';
+import DropdownOption from './DropdownOption';
 
 type DropdownPros = {
 	isDropdownOpen: boolean;

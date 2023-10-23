@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import axios from 'axios';
+import { useState } from 'react';
 import debounce from '../utils/debounce';
 
 const useStackExchangeAPI = () => {

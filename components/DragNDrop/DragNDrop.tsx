@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import ListItem from '../ListItem/ListItem';
 import useSkills from '../hooks/useSkills';
 import { balanceList } from '../utils/sort';

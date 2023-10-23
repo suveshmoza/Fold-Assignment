@@ -1,8 +1,8 @@
 'use client';
-import React, { useState, useEffect, useRef } from 'react';
-import useSkills from '../hooks/useSkills';
+import React, { useEffect, useRef, useState } from 'react';
 import Dropdown from '../Dropdown/Dropdown';
 import SkillInput from '../SkillInput/SkillInput';
+import useSkills from '../hooks/useSkills';
 import useStackExchangeAPI from '../hooks/useStackExchangeAPI';
 
 type ListItemProps = {
@@ -19,7 +19,7 @@ function ListItem({ defaultValue, index }: ListItemProps) {
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const listItemRef = useRef<HTMLDivElement | null>(null);
 	const [mounted, setMounted] = useState(false);
-	const { options, loading, fetchOptions } = useStackExchangeAPI();
+	const { options, fetchOptions } = useStackExchangeAPI();
 
 	useEffect(() => {
 		setMounted(true);

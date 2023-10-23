@@ -1,24 +1,16 @@
 'use client';
-import { ReactNode, createContext, useState, useEffect } from 'react';
-import { moveEmptySkillsToLast } from '../utils/sort';
+import { ReactNode, createContext, useEffect, useState } from 'react';
 import {
 	getInitialSkillsFromLocalStorage,
 	getNextToFillFromLocalStorage,
 	saveSkillsToLocalStorage,
 } from '../utils/localStorage';
+import { moveEmptySkillsToLast } from '../utils/sort';
 
 type Skills = {
 	title: string;
 	items: string[];
 }[];
-
-const initialSkills: Skills = [
-	{ title: 'group 1', items: ['TypeScript', '', '', '', ''] },
-	{
-		title: 'group 2',
-		items: ['', '', '', '', ''],
-	},
-];
 
 type SkillsContext = {
 	skills: Skills;
