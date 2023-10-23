@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { RxCrossCircled } from 'react-icons/rx';
 import axios from 'axios';
 import debounce from '../utils/debounce';
 import useSkills from '../hooks/useSkills';
+import Dropdown from '../Dropdown/Dropdown';
 
 type ListItemProps = {
 	defaultValue: string;
@@ -11,7 +12,7 @@ type ListItemProps = {
 
 function ListItem({ defaultValue, index }: ListItemProps) {
 	const { removeElement, nextToFill, addElement } = useSkills();
-	const [options, setOptions] = useState<string[] | null>(null);
+	const [options, setOptions] = useState<string[]>([]);
 	const [selectedOption, setSelectedOption] = useState<string | null>(
 		defaultValue
 	);
@@ -62,16 +63,10 @@ function ListItem({ defaultValue, index }: ListItemProps) {
 		}
 	};
 
-	const debouncedFetchOptions = useCallback(
-		debounce((query: string) => fetchOptions(query), 300),
-		[]
+	const debouncedFetchOptions = debounce(
+		(query: string) => fetchOptions(query),
+		300
 	);
-
-	const filterOptions = () => {
-		return options?.filter((option) =>
-			option.toLowerCase().includes(inputValue.toLowerCase())
-		);
-	};
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setInputValue(e.target.value);
@@ -116,31 +111,12 @@ function ListItem({ defaultValue, index }: ListItemProps) {
 					</span>
 				)}
 			</div>
-			{isDropdownOpen && inputValue.length === 0 && (
-				<div className="absolute z-10 top-11 left-0 w-full border bg-white rounded-lg mt-2 capitalize">
-					<div
-						onClick={() => {
-							setIsDropdownOpen(false);
-						}}
-						className="px-4 py-2 text-black/50 hover:bg-gray-100 cursor-pointer"
-					>
-						Type to search
-					</div>
-				</div>
-			)}
-			{isDropdownOpen && inputValue.length > 0 && (
-				<div className="absolute max-h-[150px]  overflow-y-scroll z-10 top-12 left-0 w-full border bg-white rounded-lg mt-2 capitalize">
-					{filterOptions()?.map((option) => (
-						<div
-							key={option}
-							onClick={() => handleOptionSelect(option)}
-							className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-						>
-							{option}
-						</div>
-					))}
-				</div>
-			)}
+			<Dropdown
+				isDropdownOpen={isDropdownOpen}
+				inputValue={inputValue}
+				options={options}
+				handleOptionSelect={handleOptionSelect}
+			/>
 		</div>
 	);
 }
