@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
+'use client';
+import { useState, useRef } from 'react';
 import ListItem from '../ListItem/ListItem';
 import useSkills from '../hooks/useSkills';
 import { balanceList } from '../utils/sort';
@@ -61,7 +62,7 @@ function DragNDrop() {
 
 	return (
 		<div className="mt-8 grid grid-cols-2 gap-4 transition-all duration-300">
-			{skills.map((grp, grpI) => (
+			{skills?.map((grp, grpI) => (
 				<div
 					key={grp.title}
 					onDragEnter={

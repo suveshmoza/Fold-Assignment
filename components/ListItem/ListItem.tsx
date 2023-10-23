@@ -1,3 +1,4 @@
+'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import { RxCrossCircled } from 'react-icons/rx';
 import axios from 'axios';
@@ -19,6 +20,11 @@ function ListItem({ defaultValue, index }: ListItemProps) {
 	const [inputValue, setInputValue] = useState(defaultValue);
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const listItemRef = useRef<HTMLDivElement | null>(null);
+	const [mounted, setMounted] = useState(false);
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
 
 	useEffect(() => {
 		function getValueWithIndex(inputValue: string) {
@@ -34,7 +40,7 @@ function ListItem({ defaultValue, index }: ListItemProps) {
 		};
 	}, [defaultValue, index]);
 
-	const handleDocumentClick = (e) => {
+	const handleDocumentClick = (e: any) => {
 		if (listItemRef.current && !listItemRef.current.contains(e.target)) {
 			setIsDropdownOpen(false);
 		}
@@ -86,6 +92,12 @@ function ListItem({ defaultValue, index }: ListItemProps) {
 		removeElement(index);
 		setInputValue('');
 	};
+
+	if (!mounted) {
+		return (
+			<div className="w-full h-[50px] animate-pulse rounded-md bg-gray-300"></div>
+		);
+	}
 
 	return (
 		<div ref={listItemRef} className="relative">

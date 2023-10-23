@@ -1,4 +1,3 @@
-'use client';
 import DragNDrop from '../DragNDrop/DragNDrop';
 
 function SkillsContainer() {

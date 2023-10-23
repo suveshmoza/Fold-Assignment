@@ -10,14 +10,13 @@ const initialSkills = [
 		items: ['', '', '', '', ''],
 	},
 ];
-
 export const getInitialSkillsFromLocalStorage = () => {
-	const skillsData = localStorage.getItem('initialSkills');
+	const skillsData = global?.window?.localStorage.getItem('initialSkills');
 	return skillsData ? JSON.parse(skillsData) : initialSkills;
 };
 
 export const getNextToFillFromLocalStorage = () => {
-	const nextToFill = localStorage.getItem('nextToFill');
+	const nextToFill = global?.window?.localStorage.getItem('nextToFill');
 	return nextToFill ? parseInt(nextToFill) : 1;
 };
 

@@ -12,6 +12,14 @@ type Skills = {
 	items: string[];
 }[];
 
+const initialSkills: Skills = [
+	{ title: 'group 1', items: ['TypeScript', '', '', '', ''] },
+	{
+		title: 'group 2',
+		items: ['', '', '', '', ''],
+	},
+];
+
 type SkillsContext = {
 	skills: Skills;
 	nextToFill: number;

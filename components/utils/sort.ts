@@ -19,17 +19,21 @@ export function balanceList(list: Group[]) {
 	return list;
 }
 
-export function moveEmptySkillsToLast(data: Group[]) {
-	const allItems = data.reduce((acc, group) => acc.concat(group.items), []);
-	allItems.sort((a, b) => {
-		if (a !== '' && b === '') {
-			return -1;
-		} else if (a === '' && b !== '') {
-			return 1;
-		} else {
-			return 0;
-		}
+export function moveEmptySkillsToLast(data: Group[]): Group[] {
+	let nonEmptyItems: string[] = [];
+	let emptyItems: string[] = [];
+
+	data.forEach((group) => {
+		group.items.forEach((item) => {
+			if (item === '') {
+				emptyItems.push(item);
+			} else {
+				nonEmptyItems.push(item);
+			}
+		});
 	});
+
+	let allItems: string[] = nonEmptyItems.concat(emptyItems);
 
 	let currentIndex = 0;
 	data.forEach((group) => {
