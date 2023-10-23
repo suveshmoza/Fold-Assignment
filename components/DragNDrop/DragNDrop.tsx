@@ -73,7 +73,7 @@ function DragNDrop() {
 				>
 					{grp.items.map((item, itemI) => (
 						<div
-							draggable={item.length > 0}
+							draggable
 							key={itemI}
 							onDragStart={(e) => handletDragStart(e, { grpI, itemI })}
 							onDragEnter={
