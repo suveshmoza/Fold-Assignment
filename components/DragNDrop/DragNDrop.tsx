@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import ListItem from '../ListItem/ListItem';
 import useSkills from '../hooks/useSkills';
 import { balanceList } from '../utils/sort';
@@ -90,6 +90,7 @@ function DragNDrop() {
 							}
 						>
 							<ListItem
+								key={item}
 								defaultValue={item}
 								index={grpI === 0 ? itemI + 1 : itemI + 6}
 							/>
