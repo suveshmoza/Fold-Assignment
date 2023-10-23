@@ -1,11 +1,9 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
-import { RxCrossCircled } from 'react-icons/rx';
-import axios from 'axios';
-import debounce from '../utils/debounce';
 import useSkills from '../hooks/useSkills';
 import Dropdown from '../Dropdown/Dropdown';
 import SkillInput from '../SkillInput/SkillInput';
+import useStackExchangeAPI from '../hooks/useStackExchangeAPI';
 
 type ListItemProps = {
 	defaultValue: string;
@@ -14,7 +12,6 @@ type ListItemProps = {
 
 function ListItem({ defaultValue, index }: ListItemProps) {
 	const { removeElement, nextToFill, addElement } = useSkills();
-	const [options, setOptions] = useState<string[]>([]);
 	const [selectedOption, setSelectedOption] = useState<string | null>(
 		defaultValue
 	);
@@ -22,6 +19,7 @@ function ListItem({ defaultValue, index }: ListItemProps) {
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const listItemRef = useRef<HTMLDivElement | null>(null);
 	const [mounted, setMounted] = useState(false);
+	const { options, loading, fetchOptions } = useStackExchangeAPI();
 
 	useEffect(() => {
 		setMounted(true);
@@ -47,38 +45,10 @@ function ListItem({ defaultValue, index }: ListItemProps) {
 		}
 	};
 
-	const fetchOptions = async (query: string) => {
-		query = query.toLowerCase();
-		if (query.length === 0) return;
-		try {
-			const { data } = await axios.get(
-				`https://api.stackexchange.com/2.3/tags?order=desc&sort=popular&inname=${query}&site=stackoverflow`
-			);
-
-			if (data.items && Array.isArray(data.items)) {
-				const namesArray = data.items.map(
-					(item: { name: string }) => item.name
-				);
-				setOptions(namesArray);
-			} else {
-				console.log('Data format is not as expected.');
-				setOptions([]);
-			}
-		} catch (error) {
-			console.error('An error occurred:', error);
-			setOptions([]);
-		}
-	};
-
-	const debouncedFetchOptions = debounce(
-		(query: string) => fetchOptions(query),
-		300
-	);
-
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setInputValue(e.target.value);
 		setIsDropdownOpen(true);
-		debouncedFetchOptions(e.target.value);
+		fetchOptions(e.target.value);
 	};
 
 	const handleOptionSelect = (option: string) => {
