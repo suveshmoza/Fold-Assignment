@@ -10,7 +10,7 @@ type DragItem = {
 };
 
 function DragNDrop() {
-	const { skills, nextToFill, updateSkillPosition } = useSkills();
+	const { skills, updateSkillPosition } = useSkills();
 	const [dragging, setDragging] = useState(false);
 
 	const dragItem = useRef<DragItem | null>(null);

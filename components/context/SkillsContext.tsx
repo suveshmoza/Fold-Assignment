@@ -1,19 +1,16 @@
 'use client';
-import { ReactNode, createContext, useState } from 'react';
+import { ReactNode, createContext, useState, useEffect } from 'react';
 import { moveEmptySkillsToLast } from '../utils/sort';
+import {
+	getInitialSkillsFromLocalStorage,
+	getNextToFillFromLocalStorage,
+	saveSkillsToLocalStorage,
+} from '../utils/localStorage';
 
 type Skills = {
 	title: string;
 	items: string[];
 }[];
-
-const initialSkills: Skills = [
-	{ title: 'group 1', items: ['TypeScript', '', '', '', ''] },
-	{
-		title: 'group 2',
-		items: ['', '', '', '', ''],
-	},
-];
 
 type SkillsContext = {
 	skills: Skills;
@@ -30,8 +27,12 @@ export default function SkillsContextProvider({
 }: {
 	children: ReactNode;
 }) {
-	const [skills, setSkills] = useState(initialSkills);
-	const [nextToFill, setNextToFill] = useState(2);
+	const [skills, setSkills] = useState(getInitialSkillsFromLocalStorage());
+	const [nextToFill, setNextToFill] = useState(getNextToFillFromLocalStorage());
+
+	useEffect(() => {
+		saveSkillsToLocalStorage(skills, nextToFill);
+	}, [skills, nextToFill]);
 
 	const updateSkillPosition = (updatedPositions: Skills) => {
 		const sortedList = moveEmptySkillsToLast(updatedPositions);
@@ -49,7 +50,7 @@ export default function SkillsContextProvider({
 				const updatedSkills = [...skills];
 				updatedSkills[groupIndex].items[itemIndex] = '';
 				setSkills(moveEmptySkillsToLast(updatedSkills));
-				setNextToFill((prev) => prev - 1);
+				setNextToFill((prev) => Math.max(prev - 1, 1));
 			}
 		}
 	};
