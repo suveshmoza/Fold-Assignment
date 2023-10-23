@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import DropdownOption from './DropdownOption';
+import DropdownContainer from './DropdownContainer';
 
 type DropdownPros = {
 	isDropdownOpen: boolean;
@@ -21,36 +23,31 @@ function Dropdown({
 
 	if (inputValue.length === 0 && isDropdownOpen) {
 		return (
-			<div className="absolute z-10 top-11 left-0 w-full border bg-white rounded-lg mt-2 capitalize">
-				<div className="px-4 py-2 text-black/50 hover:bg-gray-100 cursor-pointer">
-					Type to search
-				</div>
-			</div>
+			<DropdownContainer>
+				<DropdownOption option="Type to Search" />
+			</DropdownContainer>
 		);
 	}
 
 	return (
 		<>
 			{isDropdownOpen && inputValue.length > 0 && (
-				<div className="absolute max-h-[150px]  overflow-y-scroll z-10 top-12 left-0 w-full border bg-white rounded-lg mt-2 capitalize">
+				<DropdownContainer>
 					{options.length === 0 && (
-						<div
-							onClick={() => handleOptionSelect(inputValue)}
-							className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-						>
-							Create option {`"${inputValue}"`}
-						</div>
+						<DropdownOption
+							handleOptionSelect={handleOptionSelect}
+							customText="Create option"
+							option={inputValue}
+						/>
 					)}
 					{filterOptions()?.map((option: string) => (
-						<div
+						<DropdownOption
 							key={option}
-							onClick={() => handleOptionSelect(option)}
-							className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-						>
-							{option}
-						</div>
+							handleOptionSelect={handleOptionSelect}
+							option={option}
+						/>
 					))}
-				</div>
+				</DropdownContainer>
 			)}
 		</>
 	);
